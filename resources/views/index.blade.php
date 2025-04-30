@@ -1,3 +1,21 @@
+@php
+    use Illuminate\Support\Str;
+
+    function extractYoutubeId($url)
+    {
+        if (Str::contains($url, 'youtu.be/')) {
+            return Str::after($url, 'youtu.be/');
+        } elseif (Str::contains($url, 'watch?v=')) {
+            return Str::after($url, 'v=');
+        } elseif (Str::contains($url, 'embed/')) {
+            return Str::after($url, 'embed/');
+        }
+        return '';
+    }
+@endphp
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,6 +68,31 @@
             </div>
         </div>
     </section>
+
+    <!-- Styled Import Excel Form -->
+    <div class="card shadow-sm mb-4" style="max-width: 600px; margin: auto;">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Import Product Data</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-3">
+                    <label for="file" class="form-label">Select Excel File</label>
+                    <input type="file" name="file" id="file" class="form-control" required
+                        accept=".xls,.xlsx,.csv">
+                </div>
+                <button type="submit" class="btn btn-success w-100">Upload & Import</button>
+            </form>
+
+            @if (session('success'))
+                <div class="alert alert-success mt-3">
+                    {{ session('success') }}
+                </div>
+            @endif
+        </div>
+    </div>
+
 
     <!-- Hero section -->
     <section class="heroSection">
@@ -131,139 +174,147 @@
     <div class="godrejContainer">
         <div class="mainInner">
             <div class="commonHeading">
-                <h2>Download User Manual</h1>
+                <h2>Download User Manual</h2>
             </div>
-            <!-- Product Manuals Grid -->
-            <div class="manualsGrid">
-                <!-- Manual Card 1 -->
-                <div class="manualCard">
-                    <div class="cardImage">
-                        <picture>
-                            <source srcset="assets/images/usermanual-desktop.jpg" media="(min-width: 768px)">
-                            <source srcset="assets/images/usermanual-mobile.jpg" media="(max-width: 767px)">
-                            <img src="{{ asset('assets/images/usermanual-desktop.jpg') }}" alt="Home Locks & Security">
 
-                        </picture>
-                        <div class="cardOverlay">
-
-                            <h3>Air Conditioner</h3>
-                            <a href="{{ asset('assets/manuals/godrej_ac_dummy_manual.pdf') }}" class="commonBtn"
-                                target="_blank" download>
-
-                                <span class="btn">Download PDF
-                                    <svg width="12" height="14" viewBox="0 0 13 14" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M6.07129 1L11.7281 6.65685L6.07129 12.3137" stroke="white"
-                                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </span>
-                            </a>
-
-                            <!-- Share Button Container (bottom-right) -->
-                            <div style="position: relative;">
-                                <div id="shareContainer"
-                                    style="position: absolute; bottom: 20px; right: 20px; z-index: 999;">
-                                    <!-- Share Button -->
-                                    <button id="shareBtn"
-                                        style="width: 50px; height: 50px; border-radius: 50%; background: white; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                                        <svg width="30" height="30" viewBox="0 0 51 51" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="25.9365" cy="25.0508" r="25" fill="white" />
-                                            <path
-                                                d="M31.7695 21.2274C33.3343 21.2274 34.6028 19.9514 34.6028 18.3774C34.6028 16.8034 33.3343 15.5273 31.7695 15.5273C30.2048 15.5273 28.9363 16.8034 28.9363 18.3774C28.9363 19.9514 30.2048 21.2274 31.7695 21.2274Z"
-                                                stroke="#333333" stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                            <path
-                                                d="M20.4361 27.8769C22.0008 27.8769 23.2693 26.6008 23.2693 25.0268C23.2693 23.4528 22.0008 22.1768 20.4361 22.1768C18.8713 22.1768 17.6028 23.4528 17.6028 25.0268C17.6028 26.6008 18.8713 27.8769 20.4361 27.8769Z"
-                                                stroke="#333333" stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                            <path
-                                                d="M31.7695 34.5272C33.3343 34.5272 34.6028 33.2512 34.6028 31.6772C34.6028 30.1032 33.3343 28.8271 31.7695 28.8271C30.2048 28.8271 28.9363 30.1032 28.9363 31.6772C28.9363 33.2512 30.2048 34.5272 31.7695 34.5272Z"
-                                                stroke="#333333" stroke-width="1.5" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                            <path d="M22.8823 26.4609L29.3327 30.242" stroke="#333333"
-                                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M29.3233 19.8115L22.8823 23.5926" stroke="#333333"
-                                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </button>
-
-                                    <!-- Share Menu -->
-                                    <div id="shareMenu"
-                                        style="display: none; position: absolute; bottom: 60px; right: 0; background: white; border: 1px solid #ccc; padding: 10px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                                        <a href="#" class="share-link" data-platform="whatsapp"
-                                            style="display: block; padding: 5px 10px; text-decoration: none; color: #25D366;">Share
-                                            on WhatsApp</a>
-                                        <a href="#" class="share-link" data-platform="facebook"
-                                            style="display: block; padding: 5px 10px; text-decoration: none; color: #3b5998;">Share
-                                            on Facebook</a>
-                                        <a href="#" class="share-link" data-platform="linkedin"
-                                            style="display: block; padding: 5px 10px; text-decoration: none; color: #0077b5;">Share
-                                            on LinkedIn</a>
-                                        <a href="#" class="share-link" data-platform="twitter"
-                                            style="display: block; padding: 5px 10px; text-decoration: none; color: #1da1f2;">Share
-                                            on Twitter</a>
+            <!-- ✅ Dynamic AJAX Section -->
+            <div id="dynamicSection" style="margin-top: 30px;">
+                <div class="manualsGrid">
+                    @if ($selectedProduct)
+                        {{-- Dynamic Product Manuals --}}
+                        @foreach ($selectedProduct->manuals as $manual)
+                            <div class="manualCard">
+                                <div class="cardImage">
+                                    <picture>
+                                        <source srcset="{{ asset('assets/images/usermanual-desktop.jpg') }}"
+                                            media="(min-width: 768px)">
+                                        <source srcset="{{ asset('assets/images/usermanual-mobile.jpg') }}"
+                                            media="(max-width: 767px)">
+                                        <img src="{{ asset('assets/images/usermanual-desktop.jpg') }}"
+                                            alt="{{ $manual->title }}">
+                                    </picture>
+                                    <div class="cardOverlay">
+                                        <h3>{{ $selectedProduct->subcategory }}</h3>
+                                        <a href="{{ asset('storage/manuals/' . $manual->file_path) }}"
+                                            class="commonBtn" target="_blank" download>
+                                            <span class="btn">Download PDF</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
+                        @endforeach
+                    @else
+                        {{-- Fallback Static Manual --}}
+                        <div class="manualCard">
+                            <div class="cardImage">
+                                <picture>
+                                    <source srcset="assets/images/usermanual-desktop.jpg" media="(min-width: 768px)">
+                                    <source srcset="assets/images/usermanual-mobile.jpg" media="(max-width: 767px)">
+                                    <img src="{{ asset('assets/images/usermanual-desktop.jpg') }}"
+                                        alt="Home Locks & Security">
+                                </picture>
+                                <div class="cardOverlay">
+                                    <h3>Air Conditioner</h3>
+                                    <a href="{{ asset('assets/manuals/godrej_ac_dummy_manual.pdf') }}"
+                                        class="commonBtn" target="_blank" download>
+                                        <span class="btn">Download PDF
+                                            <svg width="12" height="14" viewBox="0 0 13 14" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M6.07129 1L11.7281 6.65685L6.07129 12.3137" stroke="white"
+                                                    stroke-width="1.5" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                            </svg>
+                                        </span>
+                                    </a>
 
-                            <!-- Share Script -->
-                            <script>
-                                document.addEventListener('DOMContentLoaded', () => {
-                                    const shareBtn = document.getElementById('shareBtn');
-                                    const shareMenu = document.getElementById('shareMenu');
-                                    const links = document.querySelectorAll('.share-link');
+                                    <!-- Share Section -->
+                                    <div style="position: relative;">
+                                        <div id="shareContainer"
+                                            style="position: absolute; bottom: 20px; right: 20px; z-index: 999;">
+                                            <button id="shareBtn"
+                                                style="width: 50px; height: 50px; border-radius: 50%; background: white; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                                <svg width="30" height="30" viewBox="0 0 51 51"
+                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="25.9365" cy="25.0508" r="25" fill="white" />
+                                                    <path
+                                                        d="M31.7695 21.2274C33.3343 21.2274 34.6028 19.9514 34.6028 18.3774..."
+                                                        stroke="#333333" stroke-width="1.5" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                            </button>
+                                            <div id="shareMenu"
+                                                style="display: none; position: absolute; bottom: 60px; right: 0; background: white; border: 1px solid #ccc; padding: 10px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                                <a href="#" class="share-link" data-platform="whatsapp"
+                                                    style="...">Share on WhatsApp</a>
+                                                <a href="#" class="share-link" data-platform="facebook"
+                                                    style="...">Share on Facebook</a>
+                                                <a href="#" class="share-link" data-platform="linkedin"
+                                                    style="...">Share on LinkedIn</a>
+                                                <a href="#" class="share-link" data-platform="twitter"
+                                                    style="...">Share on Twitter</a>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                    shareBtn.addEventListener('click', (e) => {
-                                        e.stopPropagation();
-                                        shareMenu.style.display = shareMenu.style.display === 'block' ? 'none' : 'block';
-                                    });
+                                    <!-- Share JS -->
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', () => {
+                                            const shareBtn = document.getElementById('shareBtn');
+                                            const shareMenu = document.getElementById('shareMenu');
+                                            const links = document.querySelectorAll('.share-link');
 
-                                    links.forEach(link => {
-                                        link.addEventListener('click', function(e) {
-                                            e.preventDefault();
-                                            const platform = this.getAttribute('data-platform');
-                                            const url = encodeURIComponent(window.location.href);
-                                            const text = encodeURIComponent("Check this out!");
-                                            let shareUrl = "";
+                                            shareBtn.addEventListener('click', (e) => {
+                                                e.stopPropagation();
+                                                shareMenu.style.display = shareMenu.style.display === 'block' ? 'none' : 'block';
+                                            });
 
-                                            switch (platform) {
-                                                case "whatsapp":
-                                                    shareUrl = `https://wa.me/?text=${text}%20${url}`;
-                                                    break;
-                                                case "facebook":
-                                                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-                                                    break;
-                                                case "linkedin":
-                                                    shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-                                                    break;
-                                                case "twitter":
-                                                    shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
-                                                    break;
-                                            }
+                                            links.forEach(link => {
+                                                link.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    const platform = this.getAttribute('data-platform');
+                                                    const url = encodeURIComponent(window.location.href);
+                                                    const text = encodeURIComponent("Check this out!");
+                                                    let shareUrl = "";
 
-                                            window.open(shareUrl, '_blank');
-                                            shareMenu.style.display = 'none';
+                                                    switch (platform) {
+                                                        case "whatsapp":
+                                                            shareUrl = `https://wa.me/?text=${text}%20${url}`;
+                                                            break;
+                                                        case "facebook":
+                                                            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                                                            break;
+                                                        case "linkedin":
+                                                            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+                                                            break;
+                                                        case "twitter":
+                                                            shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+                                                            break;
+                                                    }
+
+                                                    window.open(shareUrl, '_blank');
+                                                    shareMenu.style.display = 'none';
+                                                });
+                                            });
+
+                                            document.addEventListener('click', (e) => {
+                                                if (!document.getElementById('shareContainer').contains(e.target)) {
+                                                    shareMenu.style.display = 'none';
+                                                }
+                                            });
                                         });
-                                    });
-
-                                    // Close menu when clicked outside
-                                    document.addEventListener('click', (e) => {
-                                        if (!document.getElementById('shareContainer').contains(e.target)) {
-                                            shareMenu.style.display = 'none';
-                                        }
-                                    });
-                                });
-                            </script>
-
+                                    </script>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
-
             </div>
         </div>
     </div>
 </section>
+
+
+
 
 <!-- Product Videos Section -->
 <section class="productVideos">
@@ -274,108 +325,80 @@
                 <p>Watch product videos to learn more about installation, usage tips, and maintenance guidelines.
                     Explore step-by-step tutorials to get the best out of your product.</p>
             </div>
-            <div class="mobileSingleCard">
-                <div class="videoCard" data-video-src="https://www.youtube.com/watch?v=UcPyyhoGrjU"
-                    data-video-type="youtube">
-                    <div class="cardImage">
-                        <iframe width="560" height="315"
-                            src="https://www.youtube.com/embed/UcPyyhoGrjU?si=ieZp5p0QXtO_9iCr"
-                            title="YouTube video player" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-                    </div>
-                    <div class="cardContent">
-                        <h3>Step-by-Step Installation Guide for product</h3>
-                    </div>
-                </div>
-            </div>
-            <!-- Video Grid with Swiper -->
-            <div class="swiper videoSwiper">
-                <div class="swiper-wrapper">
-                    <!-- Video Card 1 -->
-                    <div class="swiper-slide">
-                        <div class="videoCard" data-video-src="https://www.youtube.com/watch?v=UcPyyhoGrjU"
-                            data-video-type="youtube">
-                            <div class="cardImage">
-                                <iframe width="560" height="315"
-                                    src="https://www.youtube.com/embed/UcPyyhoGrjU?si=ieZp5p0QXtO_9iCr"
-                                    title="YouTube video player" frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-                            </div>
-                            <div class="cardContent">
-                                <h3>Step-by-Step Installation Guide for product</h3>
-                            </div>
+            @if ($selectedProduct && count($selectedProduct->videos))
+                <!-- Main Single Video -->
+                <div class="mobileSingleCard">
+                    <div class="videoCard">
+                        <div class="cardImage">
+                            @if ($selectedProduct && count($selectedProduct->videos))
+                                @foreach ($selectedProduct->videos as $video)
+                                    <iframe width="560" height="315"
+                                        src="https://www.youtube.com/embed/{{ extractYoutubeId($video->video_link) }}"
+                                        title="{{ $video->title }}" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                                @endforeach
+                            @endif
                         </div>
-                    </div>
-                    <!-- Video Card 2 -->
-                    <div class="swiper-slide">
-                        <div class="videoCard" data-video-src="https://www.youtube.com/watch?v=UcPyyhoGrjU"
-                            data-video-type="youtube">
-                            <div class="cardImage">
-                                <iframe width="560" height="315"
-                                    src="https://www.youtube.com/embed/UcPyyhoGrjU?si=ieZp5p0QXtO_9iCr"
-                                    title="YouTube video player" frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-                            </div>
-                            <div class="cardContent">
-                                <h3>Step-by-Step Installation Guide for product</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Video Card 3 -->
-                    <div class="swiper-slide">
-                        <div class="videoCard" data-video-src="https://www.youtube.com/watch?v=UcPyyhoGrjU"
-                            data-video-type="youtube">
-                            <div class="cardImage">
-                                <iframe width="560" height="315"
-                                    src="https://www.youtube.com/embed/UcPyyhoGrjU?si=ieZp5p0QXtO_9iCr"
-                                    title="YouTube video player" frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-                            </div>
-                            <div class="cardContent">
-                                <h3>Step-by-Step Installation Guide for product</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Video Card 4 -->
-                    <div class="swiper-slide">
-                        <div class="videoCard" data-video-src="https://www.youtube.com/watch?v=UcPyyhoGrjU"
-                            data-video-type="youtube">
-                            <div class="cardImage">
-                                <iframe width="560" height="315"
-                                    src="https://www.youtube.com/embed/UcPyyhoGrjU?si=ieZp5p0QXtO_9iCr"
-                                    title="YouTube video player" frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-                            </div>
-                            <div class="cardContent">
-                                <h3>Step-by-Step Installation Guide for product</h3>
-                            </div>
+                        <div class="cardContent">
+                            <h3>{{ $selectedProduct->videos[0]->title }}</h3>
                         </div>
                     </div>
                 </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </div>
-    </div>
-    <!-- Video Modal -->
-    <div class="videoModal">
-        <div class="modalContent">
-            <button class="closeModal">&times;</button>
-            <div class="videoContainer">
-                <div id="videoPlayer"></div>
-            </div>
+
+                <!-- Swiper Video List -->
+                <div class="swiper videoSwiper">
+                    <div class="swiper-wrapper">
+                        @foreach ($selectedProduct->videos as $video)
+                            <div class="swiper-slide">
+                                <div class="videoCard">
+                                    <div class="cardImage">
+                                        @if ($selectedProduct && count($selectedProduct->videos))
+                                            @foreach ($selectedProduct->videos as $video)
+                                                <iframe width="560" height="315"
+                                                    src="https://www.youtube.com/embed/{{ extractYoutubeId($video->video_link) }}"
+                                                    title="{{ $video->title }}" frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowfullscreen></iframe>
+                                            @endforeach
+                                        @endif
+
+                                    </div>
+                                    <div class="cardContent">
+                                        <h3>{{ $video->title }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            @else
+                <!-- Fallback Static Video -->
+                <div class="mobileSingleCard">
+                    <div class="videoCard">
+                        <div class="cardImage">
+                            @if ($selectedProduct && count($selectedProduct->videos))
+                                @foreach ($selectedProduct->videos as $video)
+                                    <iframe width="560" height="315"
+                                        src="https://www.youtube.com/embed/{{ extractYoutubeId($video->video_link) }}"
+                                        title="{{ $video->title }}" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                                @endforeach
+                            @endif
+                        </div>
+                        <div class="cardContent">
+                            <h3>Step-by-Step Installation Guide for product</h3>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </section>
+
 
 <!-- Footer Section -->
 <footer class="footer">
@@ -577,6 +600,54 @@
 <!-- Add Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="{{ asset('assets/js/main.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#loadManuals').on('click', function() {
+        let slug = $('#slugInput').val().trim();
+        if (!slug) {
+            alert('Please enter a product slug.');
+            return;
+        }
+
+        $.ajax({
+            url: '/section/' + slug,
+            method: 'GET',
+            success: function(response) {
+                $('#dynamicSection').html(response);
+            },
+            error: function() {
+                alert('Product not found or something went wrong.');
+            }
+        });
+    });
+</script>
+
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+
+    $('#productSearch').on('keyup', function() {
+        let query = $(this).val();
+
+        $.ajax({
+            url: "{{ route('search.products') }}",
+            type: "GET",
+            data: {
+                query: query
+            },
+            success: function(response) {
+
+                $('#productDetails').html(response);
+            }
+        });
+    });
+</script>
+
 
 </body>
 
