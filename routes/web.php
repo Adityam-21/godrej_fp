@@ -3,12 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 
-// Landing page or product-specific landing page via optional slug
-Route::get('/{slug?}', [HomeController::class, 'index'])->name('index');
+// Main category/subcategory page
+Route::get('/{category}/{subcategory}', [HomeController::class, 'index'])->name('index');
 
-// AJAX search route
-Route::get('/search-products', [HomeController::class, 'search'])->name('search.products');
+// Product detail page
+Route::get('/refrigerator/{slug}', [HomeController::class, 'show'])->name('product.show');
 
-// AJAX dynamic section loader
-Route::get('/section/{slug}', [HomeController::class, 'loadProductSection'])->name('section.load');
-Route::post('/import-products', [HomeController::class, 'import'])->name('products.import');
+// You might also want to add a default route
+Route::get('/', function () {
+    return redirect('/home/welcome');
+});

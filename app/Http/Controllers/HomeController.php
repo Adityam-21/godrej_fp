@@ -8,57 +8,24 @@ use App\Models\UserManual;
 use App\Models\Video;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductsImport;
+use App\Models\CustomerSupport;
 
 class HomeController extends Controller
 {
-    // Main landing page with optional slug
-    public function index($slug = null)
+
+    public function index($category, $subcategory)
     {
-        $products = Product::with(['manuals', 'videos'])->get();
-        $selectedProduct = null;
+        $products = product::where('subcategory', $subcategory)->where('status', 1)->firstOrFail();
+        $contacts = CustomerSupport::where('status', 1)->orderBy('id')->get();
+        $manuals = UserManual::where('product_id', $products->id)->where('status', 1)->get();
+        $videos = Video::where('product_id', $products->id)->where('status', 1)->get();
 
-        if ($slug) {
-            $selectedProduct = Product::with(['manuals', 'videos'])
-                ->where('page_slug', $slug)
-                ->where('status', 1)
-                ->first();
-        }
-
-        return view('index', compact('products', 'selectedProduct'));
+        return view('index', compact('contacts', 'manuals' , 'videos'));
     }
 
-    // Product search
-    public function search(Request $request)
+    public function show($slug)
     {
-        $query = $request->input('query');
-
-        $products = Product::with(['manuals', 'videos'])
-            ->where('name', 'LIKE', "%{$query}%")
-            ->get();
-
-        return view('partials.product-section', compact('products'));
-    }
-
-    // ✅ Updated Excel import method
-    public function import(Request $request)
-    {
-        $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv'
-        ]);
-
-        Excel::import(new ProductsImport, $request->file('file'));
-
-        return back()->with('success', 'Excel data imported successfully!');
-    }
-
-    // AJAX loader for manual/video sections by slug
-    public function loadProductSection($slug)
-    {
-        $product = Product::with(['manuals', 'videos'])
-            ->where('page_slug', $slug)
-            ->where('status', 1)
-            ->firstOrFail();
-
-        return view('partials.manual-section', compact('product'));
+        $contacts = CustomerSupport::where('status', 1)->orderBy('id')->get();
+        return view('show', compact('contacts'));
     }
 }
