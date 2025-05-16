@@ -1,5 +1,11 @@
+@php
+    $usermanualCms = $cmsSections->firstWhere('section_name', 'usermanual');
+@endphp
+
 <!-- Download Product Manuals Section -->
-<section class="downloadManuals">
+<section class="downloadManuals userManualSection"
+    style="background-image: url('{{ asset($usermanualCms->background_image ?? 'assets/images/default-bg.jpg') }}'); background-size: cover; background-position: center;">
+    
     <div class="godrejContainer">
         <div class="mainInner">
             <div class="commonHeading">
@@ -13,24 +19,15 @@
                     <div class="manualCard">
                         <div class="cardImage">
                             <picture>
-                                {{-- Optional: use dynamic images from DB if available --}}
-                                {{-- <source srcset="{{ asset('storage/' . $manual->image_desktop) }}" media="(min-width: 768px)"> --}}
-                                <source srcset="{{ asset('assets/images/usermanual-desktop.jpg') }}"
-                                    media="(min-width: 768px)">
-                                {{-- <source srcset="{{ asset('storage/' . $manual->image_mobile) }}" media="(max-width: 767px)"> --}}
-                                <source srcset="{{ asset('assets/images/usermanual-mobile.jpg') }}"
-                                    media="(max-width: 767px)">
-                                <img src="{{ asset('assets/images/usermanual-desktop.jpg') }}"
-                                    alt="{{ $manual->title }}">
+                                <source srcset="{{ asset('assets/images/usermanual-desktop.jpg') }}" media="(min-width: 768px)">
+                                <source srcset="{{ asset('assets/images/usermanual-mobile.jpg') }}" media="(max-width: 767px)">
+                                <img src="{{ asset('assets/images/usermanual-desktop.jpg') }}" alt="{{ $manual->title }}">
                             </picture>
 
                             <div class="cardOverlay">
                                 <h3>{{ $manual->pdf_title }}</h3>
 
-                                {{-- <a href="{{ asset('/assets/manuals' . $manual->pdf_file) }}" target="_blank" --}}
-                                    <a href="{{ asset($manual->file_path) }}" target="_blank"
-
-                                    class="commonBtn">
+                                <a href="{{ asset($manual->file_path) }}" target="_blank" class="commonBtn">
                                     <span class="btn">Download PDF
                                         <svg width="12" height="14" viewBox="0 0 13 14" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -42,19 +39,12 @@
 
                                 <!-- Share Button -->
                                 <button class="shareBtn" onclick="toggleShareMenu({{ $manual->id }})">
-
                                     <!-- Share Menu -->
                                     <div class="shareMenu" id="share-menu-{{ $manual->id }}">
-                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(asset('storage/' . $manual->pdf_file)) }}"
-                                            target="_blank">Facebook</a>
-                                        <a href="https://wa.me/?text={{ urlencode(asset('storage/' . $manual->pdf_file)) }}"
-                                            target="_blank">WhatsApp</a>
-                                        <a href="https://twitter.com/intent/tweet?url={{ urlencode(asset('storage/' . $manual->pdf_file)) }}"
-                                            target="_blank">Twitter</a>
-                                        <a
-                                            href="mailto:client.services@godrejinds.com?subject={{ rawurlencode('User Manual') }}&body={{ rawurlencode("Hi,\n\nPlease find the user manual here:\n" . asset('storage/' . $manual->pdf_file)) }}">
-                                            Mail
-                                        </a>
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(asset($manual->file_path)) }}" target="_blank">Facebook</a>
+                                        <a href="https://wa.me/?text={{ urlencode(asset($manual->file_path)) }}" target="_blank">WhatsApp</a>
+                                        <a href="https://twitter.com/intent/tweet?url={{ urlencode(asset($manual->file_path)) }}" target="_blank">Twitter</a>
+                                        <a href="mailto:client.services@godrejinds.com?subject={{ rawurlencode('User Manual') }}&body={{ rawurlencode("Hi,\n\nPlease find the user manual here:\n" . asset($manual->file_path)) }}">Mail</a>
                                     </div>
                                 </button>
                             </div>
