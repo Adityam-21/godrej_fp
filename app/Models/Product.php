@@ -16,6 +16,7 @@ class Product extends Model
         'page_slug',
         'status',
         'description',
+        'image',
     ];
 
     public function manuals()
@@ -25,5 +26,11 @@ class Product extends Model
     public function videos()
     {
         return $this->hasMany(\App\Models\Video::class, 'product_id');
+    }
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image
+            ? Storage::url($this->image)
+            : null;
     }
 }
